@@ -5,4 +5,5 @@ class MyItems {
   String title;
   String description;
   static RxList<MyItems> myItemsList = <MyItems>[].obs;
+  static RxBool editMode = RxBool(false);
 }

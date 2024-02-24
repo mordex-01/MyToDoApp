@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:test_1/model/myitems.dart';
 import 'package:test_1/pages/details_page/controller/details_page_controller.dart';
 import 'package:test_1/pages/home_page/view/home_page.dart';
 
@@ -22,19 +25,28 @@ class DetailsPage extends GetView<DetailsPageController> {
           ),
           _buildTextField(
             "Description",
-            20,
+            (MediaQuery.sizeOf(context).height / 40).round(),
             controller.descriptionController.value,
           ),
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height / 4.5,
-          ),
+          const Expanded(child: SizedBox()),
           _buildSubmitButton(
             context,
             () {
               if (controller.titleController.value.text.isEmpty ||
                   controller.descriptionController.value.text.isEmpty) {
-                return;
+                return null;
               }
+
+              if (MyItems.editMode == RxBool(true)) {
+                controller.editToDo(
+                  controller.titleController.value.text,
+                  controller.descriptionController.value.text,
+                  int.parse(Get.parameters["id"]!),
+                );
+                MyItems.editMode = RxBool(false);
+                return Get.offAndToNamed(HomePage.homePageRoute);
+              }
+
               controller.addToDo(controller.titleController.value.text,
                   controller.descriptionController.value.text);
               Get.offAndToNamed(HomePage.homePageRoute);
@@ -65,8 +77,7 @@ Widget _buildTextField(
         ),
       ),
     );
-Widget _buildSubmitButton(BuildContext context, void Function()? onTap) =>
-    Padding(
+Widget _buildSubmitButton(BuildContext context, Function()? onTap) => Padding(
       padding: const EdgeInsets.all(8),
       child: Material(
         borderRadius: BorderRadius.circular(25),

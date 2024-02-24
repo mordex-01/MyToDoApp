@@ -25,7 +25,17 @@ class HomePage extends GetView<HomePageController> {
                   child: _BuildTodoTile(
                     title: MyItems.myItemsList[index].title,
                     description: MyItems.myItemsList[index].description,
-                    onEditTap: () {},
+                    onEditTap: () {
+                      MyItems.editMode = RxBool(true);
+                      Get.toNamed(
+                        DetailsPage.detailsPageRoute,
+                        parameters: {
+                          "title": MyItems.myItemsList[index].title,
+                          "description": MyItems.myItemsList[index].description,
+                          "id": index.toString(),
+                        },
+                      );
+                    },
                     onDeleteTap: () {
                       MyItems.myItemsList.removeAt(index);
                     },
@@ -62,7 +72,7 @@ class _BuildTodoTile extends StatelessWidget {
       width: 367,
       height: 142,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,38 +86,41 @@ class _BuildTodoTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(description),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(description),
+              ),
             ],
           ),
-          const SizedBox(
-            width: 250,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Icon(
-                Icons.check,
-                size: 33,
-              ),
-              InkWell(
-                onTap: onEditTap,
-                child: const Icon(
-                  Icons.edit,
-                  color: Colors.orange,
+          Padding(
+            padding: const EdgeInsets.only(right: 8, left: 1),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Icon(
+                  Icons.check,
                   size: 33,
                 ),
-              ),
-              InkWell(
-                borderRadius: BorderRadius.circular(25),
-                onTap: onDeleteTap,
-                child: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 33,
+                InkWell(
+                  onTap: onEditTap,
+                  child: const Icon(
+                    Icons.edit,
+                    color: Colors.orange,
+                    size: 33,
+                  ),
                 ),
-              )
-            ],
+                InkWell(
+                  borderRadius: BorderRadius.circular(25),
+                  onTap: onDeleteTap,
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 33,
+                  ),
+                )
+              ],
+            ),
           ),
         ],
       ),
