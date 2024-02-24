@@ -1,68 +1,89 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:test_1/model/myitems.dart';
 import 'package:test_1/pages/details_page/controller/details_page_controller.dart';
 import 'package:test_1/pages/home_page/view/home_page.dart';
 
+//fix validation
 class DetailsPage extends GetView<DetailsPageController> {
   const DetailsPage({super.key});
+
   static const detailsPageRoute = "/DetailsPage";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(220, 220, 220, 1),
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height / 55,
-          ),
-          Form(
-            child:
-                _buildTextField("Title", 1, controller.titleController.value),
-          ),
-          _buildTextField(
-            "Description",
-            (MediaQuery.sizeOf(context).height / 40).round(),
-            controller.descriptionController.value,
-          ),
-          const Expanded(child: SizedBox()),
-          _buildSubmitButton(
-            context,
-            () {
-              if (controller.titleController.value.text.isEmpty ||
-                  controller.descriptionController.value.text.isEmpty) {
+      body: Form(
+        key: controller.formKey,
+        onChanged: () => controller.formKey.currentState!.validate(),
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height / 55,
+            ),
+            _buildTextField(
+              "Title",
+              1,
+              controller.titleController.value,
+              (value) {
+                if (value!.length > 20) {
+                  return "Title Cant be more than 20 characters";
+                }
+                if (value.isEmpty) {
+                  return "Title Cant be empty";
+                }
                 return null;
-              }
-
-              if (MyItems.editMode == RxBool(true)) {
-                controller.editToDo(
-                  controller.titleController.value.text,
-                  controller.descriptionController.value.text,
-                  int.parse(Get.parameters["id"]!),
-                );
-                MyItems.editMode = RxBool(false);
-                return Get.offAndToNamed(HomePage.homePageRoute);
-              }
-
-              controller.addToDo(controller.titleController.value.text,
-                  controller.descriptionController.value.text);
-              Get.offAndToNamed(HomePage.homePageRoute);
-            },
-          ),
-        ],
+              },
+            ),
+            _buildTextField(
+              "Description",
+              (MediaQuery.sizeOf(context).height / 40).round(),
+              controller.descriptionController.value,
+              (value) {
+                if (value!.isEmpty) {
+                  return "Description Cant be empty";
+                }
+                return null;
+              },
+            ),
+            const Expanded(child: SizedBox()),
+            _buildSubmitButton(
+              context,
+              () {
+                if (controller.formKey.currentState!.validate()) {
+                  if (MyItems.editMode == RxBool(true)) {
+                    controller.editToDo(
+                      controller.titleController.value.text,
+                      controller.descriptionController.value.text,
+                      int.parse(Get.parameters["id"]!),
+                    );
+                    MyItems.editMode = RxBool(false);
+                    return Get.offAndToNamed(HomePage.homePageRoute);
+                  }
+                  controller.addToDo(controller.titleController.value.text,
+                      controller.descriptionController.value.text);
+                  Get.offAndToNamed(HomePage.homePageRoute);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 Widget _buildTextField(
-        String hintText, int? maxLines, TextEditingController? controller) =>
+  String hintText,
+  int? maxLines,
+  TextEditingController? controller,
+  String? Function(String?)? validator,
+) =>
     Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
+        validator: validator,
         maxLines: maxLines,
         controller: controller,
         decoration: InputDecoration(

@@ -5,7 +5,7 @@ import 'package:test_1/model/myitems.dart';
 class DetailsPageController extends GetxController {
   Rx<TextEditingController> titleController = TextEditingController().obs;
   Rx<TextEditingController> descriptionController = TextEditingController().obs;
-
+  final formKey = GlobalKey<FormState>();
   addToDo(String title, String description) {
     MyItems.myItemsList.add(
       MyItems(title: title, description: description),

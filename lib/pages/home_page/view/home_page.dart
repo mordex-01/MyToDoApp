@@ -16,34 +16,37 @@ class HomePage extends GetView<HomePageController> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Obx(
-              () => ListView.builder(
-                itemCount: MyItems.myItemsList.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _BuildTodoTile(
-                    title: MyItems.myItemsList[index].title,
-                    description: MyItems.myItemsList[index].description,
-                    onEditTap: () {
-                      MyItems.editMode = RxBool(true);
-                      Get.toNamed(
-                        DetailsPage.detailsPageRoute,
-                        parameters: {
-                          "title": MyItems.myItemsList[index].title,
-                          "description": MyItems.myItemsList[index].description,
-                          "id": index.toString(),
-                        },
-                      );
-                    },
-                    onDeleteTap: () {
-                      MyItems.myItemsList.removeAt(index);
-                    },
+          Obx(
+            () => MyItems.myItemsList.isEmpty
+                ? _buildCenterText()
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: MyItems.myItemsList.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: _BuildTodoTile(
+                          title: MyItems.myItemsList[index].title,
+                          description: MyItems.myItemsList[index].description,
+                          onEditTap: () {
+                            MyItems.editMode = RxBool(true);
+                            Get.toNamed(
+                              DetailsPage.detailsPageRoute,
+                              parameters: {
+                                "title": MyItems.myItemsList[index].title,
+                                "description":
+                                    MyItems.myItemsList[index].description,
+                                "id": index.toString(),
+                              },
+                            );
+                          },
+                          onDeleteTap: () {
+                            MyItems.myItemsList.removeAt(index);
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          )
+          ),
         ],
       ),
     );
@@ -88,7 +91,14 @@ class _BuildTodoTile extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8),
-                child: Text(description),
+                child: SizedBox(
+                  width: 230,
+                  height: 90,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Text(description),
+                  ),
+                ),
               ),
             ],
           ),
