@@ -8,7 +8,10 @@ class DetailsPageController extends GetxController {
   final formKey = GlobalKey<FormState>();
   addToDo(String title, String description) {
     MyItems.myItemsList.add(
-      MyItems(title: title, description: description),
+      MyItems(
+        title: title,
+        description: description,
+      ),
     );
   }
 

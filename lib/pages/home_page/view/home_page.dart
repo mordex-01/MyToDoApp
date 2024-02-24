@@ -24,24 +24,44 @@ class HomePage extends GetView<HomePageController> {
                       itemCount: MyItems.myItemsList.length,
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.all(8),
-                        child: _BuildTodoTile(
-                          title: MyItems.myItemsList[index].title,
-                          description: MyItems.myItemsList[index].description,
-                          onEditTap: () {
-                            MyItems.editMode = RxBool(true);
-                            Get.toNamed(
-                              DetailsPage.detailsPageRoute,
-                              parameters: {
-                                "title": MyItems.myItemsList[index].title,
-                                "description":
-                                    MyItems.myItemsList[index].description,
-                                "id": index.toString(),
-                              },
-                            );
-                          },
-                          onDeleteTap: () {
-                            MyItems.myItemsList.removeAt(index);
-                          },
+                        child: Obx(
+                          () => _BuildTodoTile(
+                            decoration:
+                                MyItems.myItemsList[index].isChecked.value ==
+                                        true
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                            checkBoxicon:
+                                MyItems.myItemsList[index].isChecked.value ==
+                                        false
+                                    ? Icons.check_box_outline_blank
+                                    : Icons.check_box,
+                            color: MyItems.myItemsList[index].isChecked.value ==
+                                    false
+                                ? Colors.white
+                                : const Color.fromRGBO(200, 255, 199, 1),
+                            onContainerTap: () {
+                              MyItems.myItemsList[index].isChecked.value =
+                                  !MyItems.myItemsList[index].isChecked.value;
+                            },
+                            title: MyItems.myItemsList[index].title,
+                            description: MyItems.myItemsList[index].description,
+                            onEditTap: () {
+                              MyItems.editMode = RxBool(true);
+                              Get.toNamed(
+                                DetailsPage.detailsPageRoute,
+                                parameters: {
+                                  "title": MyItems.myItemsList[index].title,
+                                  "description":
+                                      MyItems.myItemsList[index].description,
+                                  "id": index.toString(),
+                                },
+                              );
+                            },
+                            onDeleteTap: () {
+                              MyItems.myItemsList.removeAt(index);
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -58,81 +78,94 @@ class _BuildTodoTile extends StatelessWidget {
   final String description;
   final void Function()? onDeleteTap;
   final void Function()? onEditTap;
+  final void Function()? onContainerTap;
+  final IconData? checkBoxicon;
+  final Color? color;
+  final TextDecoration? decoration;
   const _BuildTodoTile({
     required this.title,
     required this.description,
     required this.onDeleteTap,
     required this.onEditTap,
+    required this.onContainerTap,
+    required this.color,
+    required this.checkBoxicon,
+    required this.decoration,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        color: const Color.fromRGBO(200, 255, 199, 1),
-      ),
-      width: 367,
-      height: 142,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: SizedBox(
-                  width: 230,
-                  height: 90,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Text(description),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8, left: 1),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return InkWell(
+      borderRadius: BorderRadius.circular(25),
+      onTap: onContainerTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: color,
+        ),
+        width: 367,
+        height: 142,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.check,
-                  size: 33,
-                ),
-                InkWell(
-                  onTap: onEditTap,
-                  child: const Icon(
-                    Icons.edit,
-                    color: Colors.orange,
-                    size: 33,
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 20, decoration: decoration),
                   ),
                 ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(25),
-                  onTap: onDeleteTap,
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                    size: 33,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: SizedBox(
+                    width: 230,
+                    height: 90,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(
+                        description,
+                        style: TextStyle(decoration: decoration),
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(right: 8, left: 1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    checkBoxicon,
+                    size: 33,
+                  ),
+                  InkWell(
+                    onTap: onEditTap,
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.orange,
+                      size: 33,
+                    ),
+                  ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(25),
+                    onTap: onDeleteTap,
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 33,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
