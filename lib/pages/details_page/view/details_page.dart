@@ -6,6 +6,7 @@ import 'package:test_1/pages/home_page/view/home_page.dart';
 class DetailsPage extends GetView<DetailsPageController> {
   const DetailsPage({super.key});
   static const detailsPageRoute = "/DetailsPage";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,22 +16,43 @@ class DetailsPage extends GetView<DetailsPageController> {
           SizedBox(
             height: MediaQuery.sizeOf(context).height / 55,
           ),
-          _buildTextField("Title", 1),
-          _buildTextField("Description", 20),
+          Form(
+            child:
+                _buildTextField("Title", 1, controller.titleController.value),
+          ),
+          _buildTextField(
+            "Description",
+            20,
+            controller.descriptionController.value,
+          ),
           SizedBox(
             height: MediaQuery.sizeOf(context).height / 4.5,
           ),
-          _buildSubmitButton(context),
+          _buildSubmitButton(
+            context,
+            () {
+              if (controller.titleController.value.text.isEmpty ||
+                  controller.descriptionController.value.text.isEmpty) {
+                return;
+              }
+              controller.addToDo(controller.titleController.value.text,
+                  controller.descriptionController.value.text);
+              Get.offAndToNamed(HomePage.homePageRoute);
+            },
+          ),
         ],
       ),
     );
   }
 }
 
-Widget _buildTextField(String hintText, int? maxLines) => Padding(
+Widget _buildTextField(
+        String hintText, int? maxLines, TextEditingController? controller) =>
+    Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         maxLines: maxLines,
+        controller: controller,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -43,14 +65,13 @@ Widget _buildTextField(String hintText, int? maxLines) => Padding(
         ),
       ),
     );
-Widget _buildSubmitButton(BuildContext context) => Padding(
+Widget _buildSubmitButton(BuildContext context, void Function()? onTap) =>
+    Padding(
       padding: const EdgeInsets.all(8),
       child: Material(
         borderRadius: BorderRadius.circular(25),
         child: InkWell(
-          onTap: () {
-            Get.offAndToNamed(HomePage.homePageRoute);
-          },
+          onTap: onTap,
           borderRadius: BorderRadius.circular(25),
           child: Container(
             width: MediaQuery.sizeOf(context).width / 1,
