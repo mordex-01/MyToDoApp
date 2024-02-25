@@ -4,7 +4,6 @@ import 'package:test_1/model/myitems.dart';
 import 'package:test_1/pages/details_page/controller/details_page_controller.dart';
 import 'package:test_1/pages/home_page/view/home_page.dart';
 
-//fix validation
 class DetailsPage extends GetView<DetailsPageController> {
   const DetailsPage({super.key});
 
@@ -59,11 +58,43 @@ class DetailsPage extends GetView<DetailsPageController> {
                       int.parse(Get.parameters["id"]!),
                     );
                     MyItems.editMode = RxBool(false);
+                    Get.showSnackbar(
+                      GetSnackBar(
+                        titleText: Text(
+                          controller.titleController.value.text,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        messageText: const Text(
+                          "Successfully Edited",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        duration: const Duration(seconds: 2),
+                        borderRadius: 25,
+                        margin: const EdgeInsets.all(8),
+                        backgroundColor: Colors.yellow,
+                      ),
+                    );
                     return Get.offAndToNamed(HomePage.homePageRoute);
                   }
                   controller.addToDo(controller.titleController.value.text,
                       controller.descriptionController.value.text);
                   Get.offAndToNamed(HomePage.homePageRoute);
+                  Get.showSnackbar(
+                    GetSnackBar(
+                      titleText: Text(
+                        controller.titleController.value.text,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      messageText: const Text(
+                        "Successfully Added",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      duration: const Duration(seconds: 2),
+                      borderRadius: 25,
+                      margin: const EdgeInsets.all(8),
+                      backgroundColor: Colors.green[300]!,
+                    ),
+                  );
                 }
               },
             ),

@@ -59,6 +59,22 @@ class HomePage extends GetView<HomePageController> {
                               );
                             },
                             onDeleteTap: () {
+                              Get.showSnackbar(
+                                GetSnackBar(
+                                  titleText: Text(
+                                    MyItems.myItemsList[index].title,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  messageText: const Text(
+                                    "Successfully Deleted",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                  borderRadius: 25,
+                                  margin: const EdgeInsets.all(8),
+                                  backgroundColor: Colors.red[300]!,
+                                ),
+                              );
                               MyItems.myItemsList.removeAt(index);
                             },
                           ),
