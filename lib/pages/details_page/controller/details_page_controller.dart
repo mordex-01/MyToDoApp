@@ -26,7 +26,7 @@ class DetailsPageController extends GetxController {
     if (MyItems.editMode == RxBool(true)) {
       titleController.value.text = data['title']!;
       descriptionController.value.text = data['description']!;
-    } else {}
+    }
     super.onInit();
   }
 }

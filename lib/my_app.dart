@@ -18,12 +18,14 @@ class MyApp extends StatelessWidget {
           name: HomePage.homePageRoute,
           page: () => const HomePage(),
           binding: HomePageBinding(),
+          children: [
+            GetPage(
+              name: DetailsPage.detailsPageRoute,
+              page: () => const DetailsPage(),
+              binding: DetailsPageBinding(),
+            )
+          ],
         ),
-        GetPage(
-          name: DetailsPage.detailsPageRoute,
-          page: () => const DetailsPage(),
-          binding: DetailsPageBinding(),
-        )
       ],
     );
   }

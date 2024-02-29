@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
+//else fixed
+//multiple class fixed
+//homeview functions about to fix
 class MyItems {
   MyItems({
     required this.title,
